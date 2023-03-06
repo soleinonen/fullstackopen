@@ -1,0 +1,26 @@
+.addition {
+    color: green;
+    background-color: lightgrey;
+    border: solid;
+    border-color: green;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.success{
+    color: green;
+    background-color: lightgrey;
+    border: solid;
+    border-color: green;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.failedUpdate {
+    color: red;
+    background-color: lightgrey;
+    border: solid;
+    border-color: red;
+    border-radius: 10px;
+    padding: 5px;
+}
