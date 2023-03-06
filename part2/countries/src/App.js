@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react'
-import axios from 'axios'
 import SearchBar from './components/SearchBar.js'
 import Countries from './components/Countries.js'
 import getCityWeather from './services/weatherService'
@@ -10,6 +9,7 @@ const App = () => {
   const [countries, setCountries] = useState([])
   const [weather, setWeather] = useState({})
   const [selectedCountry, setSelectedCountry] = useState(null)
+  const [shownCountries, setShownCountries] = useState(countries)
 
   useEffect(() => {
     if(selectedCountry) {
@@ -23,14 +23,18 @@ const App = () => {
       .then(data =>setCountries(data))
   }, [])
 
-  const filterFunc = (country) => {
-    return country.name.common.toLowerCase().includes(searchText.toLowerCase())
+  const filterByText = (country, text) => {
+    return country.name.common.toLowerCase().includes(text)
+  }
+
+  const filterByTextAndSort = (countries, text) => {
+    return countries.filter((country)=>filterByText(country, text)).sort((a,b)=>a.name.common.localeCompare(b.name.common))
   }
 
   const handleSearchChange = (event) => {
-    event.preventDefault()
     setSearchText(event.target.value)
-    const filteredCountries = countries.filter((country) => country.name.common.toLowerCase().includes(event.target.value.toLowerCase()))
+    const filteredCountries = filterByTextAndSort(countries, event.target.value)
+    setShownCountries(filteredCountries)
     if(filteredCountries.length === 1) {
       setSelectedCountry(filteredCountries[0])
     } else {
@@ -41,7 +45,7 @@ const App = () => {
   return (
     <div>
       <SearchBar searchText={searchText} handleSearchChange={handleSearchChange}/>
-      <Countries countries={countries.filter(filterFunc).sort((a,b)=>a.name.common.localeCompare(b.name.common))} selectedCountry={selectedCountry} weather={weather} onClick={setSelectedCountry} />
+      <Countries countries={shownCountries} selectedCountry={selectedCountry} weather={weather} onClick={setSelectedCountry} />
     </div>
 
   );
