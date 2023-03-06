@@ -2,9 +2,10 @@ import {useState, useEffect} from 'react'
 import axios from 'axios'
 import SearchBar from './components/SearchBar.js'
 import Countries from './components/Countries.js'
+import getCityWeather from './services/weatherService'
+import getCountryData from './services/countryService'
 
 const App = () => {
-  const weather_api_key = process.env.REACT_APP_API_KEY
   const [searchText, setSearchText] = useState('')
   const [countries, setCountries] = useState([])
   const [weather, setWeather] = useState({})
@@ -12,21 +13,14 @@ const App = () => {
 
   useEffect(() => {
     if(selectedCountry) {
-      axios
-      .get(`http://api.openweathermap.org/data/2.5/weather?q=${selectedCountry.capital[0]}&appid=${weather_api_key}`)
-      .then(response => {
-        console.log(response)
-        setWeather(response.data)
-      })
-    }
+      getCityWeather(selectedCountry)
+        .then(data => setWeather(data))
+      }
   }, [selectedCountry])
 
   useEffect(() => {
-    axios
-    .get('https://restcountries.com/v3.1/all')
-    .then(response => {
-      setCountries(response.data)
-    })
+    getCountryData()
+      .then(data =>setCountries(data))
   }, [])
 
   const filterFunc = (country) => {
