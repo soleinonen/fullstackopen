@@ -46,7 +46,7 @@ const AddNotification = ({message}) => <Notification message={message} className
 
 const UpdateNotification = ({message}) => <Notification message={message} className="success"/>
 
-const FailedUpdateNotification = ({message}) => <Notification message={message} className="failedUpdate" />
+const FailedUpdateNotification = ({message}) => <Notification message={message} className="failed" />
 
 const DeleteNotification = ({message}) => <Notification message={message} className="success"/>
 
