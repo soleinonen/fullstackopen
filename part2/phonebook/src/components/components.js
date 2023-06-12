@@ -1,5 +1,3 @@
-import '../index.css'
-
 const Person = ({person, onClick}) => {
     return (
     <div>
@@ -31,23 +29,25 @@ const HeaderText = ({text}) => <h2>{text}</h2>
 
 const PersonFilter = ({filter,changeFunc}) =>  <div>filter shown with: <input value={filter} onChange={changeFunc} /></div>
 
-const Notification = ({message, className}) => {
+const Notification = ({message, type}) => {
   if(message===null) {
     return null
   }
+
+  const style = {
+    color: type==='error' ? 'red' : 'green',
+    background: 'lightgrey',
+    border: 'solid',
+    bordercolor: type==='error' ? 'red' : 'green',
+    borderradius: 10,
+    padding: 5
+  }
+
   return (
-    <div className={className}>
+    <div style={style}>
       {message}
     </div>
   )
 }
 
-const AddNotification = ({message}) => <Notification message={message} className="success"/>
-
-const UpdateNotification = ({message}) => <Notification message={message} className="success"/>
-
-const FailedUpdateNotification = ({message}) => <Notification message={message} className="failed" />
-
-const DeleteNotification = ({message}) => <Notification message={message} className="success"/>
-
-export {Person, Persons, AddPersonForm, HeaderText, PersonFilter, AddNotification, FailedUpdateNotification, DeleteNotification, UpdateNotification}
+export {Person, Persons, AddPersonForm, HeaderText, PersonFilter, Notification}

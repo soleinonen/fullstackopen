@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import {HeaderText, PersonFilter, AddPersonForm, Persons, AddNotification, FailedUpdateNotification, DeleteNotification, UpdateNotification} from './components/components'
+import {HeaderText, PersonFilter, AddPersonForm, Persons, Notification} from './components/components'
 import personService from './services/personService'
 
 const App = () => {
@@ -7,10 +7,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [addMessage, setAddMessage] = useState(null)
-  const [failedUpdateMessage, setFailedUpdateMessage] = useState(null)
-  const [deleteMessage, setDeleteMessage] = useState(null)
-  const [updateMessage, setUpdateMessage] = useState(null)
+  const [notificationText, setNotificationText] = useState(null)
+  const [notificationType, setNotificationType] = useState(null)
 
   useEffect(() => {
     personService.getAll()
@@ -25,6 +23,15 @@ const App = () => {
 
   const handleFilterInputChange = (event) => setFilter(event.target.value)
 
+  const notify = (message, type='info') => {
+    setNotificationType(type)
+    setNotificationText(message)
+    setTimeout(() => {
+      setNotificationText(null)
+      setNotificationType(null)
+    }, 2000)
+  }
+
   const addPerson = (event) => {
     event.preventDefault()
     const personObj = {
@@ -37,15 +44,11 @@ const App = () => {
         personObj.id = persons.find(person=>person.name===newName).id
         personService.updatePerson(personObj).then(() => {
           setPersons(persons.filter(person=>person.id!==personObj.id).concat(personObj))
-          setUpdateMessage(`Number of ${personObj.name} has been updated.`)
-          setTimeout(() => {
-            setUpdateMessage(null)
-          }, 2000)
+          notify(`Number of ${personObj.name} has been updated.`)
         })
         .catch(error => {
-          setFailedUpdateMessage(`Person ${personObj.name} is already removed from server.`)
+          notify(`Person ${personObj.name} is already removed from server.`, 'error')
           setTimeout(() => {
-            setFailedUpdateMessage(null)
             personService.getAll()
               .then(data => setPersons(data))
           }, 2000)
@@ -53,15 +56,14 @@ const App = () => {
       }
       return
     }
-
     personService.createPerson(personObj).then(retPerson => {
       setPersons(persons.concat(retPerson))
       setNewName('')
       setNewNumber('')
-      setAddMessage(`Added person${personObj.name}.`)
-      setTimeout(() => {
-        setAddMessage(null)
-      }, 2000)
+      notify(`Added person ${personObj.name}.`)
+    })
+    .catch(error => {
+      notify(error.response.data.error, 'error')
     })
   }
 
@@ -71,10 +73,7 @@ const App = () => {
     if(deleteConfirmation) {
       personService.deletePerson(personId).then(() => {
         setPersons(persons.filter(person => person.id!==personId))
-        setDeleteMessage(`Deleted ${name} from database.`)
-        setTimeout(() => {
-          setDeleteMessage(null)
-        },2000)
+        notify(`Deleted ${name} from database.`)
       })
     }
   }
@@ -82,10 +81,7 @@ const App = () => {
   return (
     <div>
       <HeaderText text="Phonebook" />
-      <AddNotification message = {addMessage}/>
-      <UpdateNotification message={updateMessage}/>
-      <FailedUpdateNotification message = {failedUpdateMessage} />
-      <DeleteNotification message={deleteMessage} className="success"/>
+      <Notification message={notificationText} type={notificationType}/>
       <PersonFilter filter={filter} changeFunc={handleFilterInputChange}/>
       <HeaderText text ="Add new contact" />
       <AddPersonForm
