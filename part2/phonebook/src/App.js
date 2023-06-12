@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import {HeaderText, PersonFilter, AddPersonForm, Persons, Notification} from './components/components'
+import { HeaderText, PersonFilter, AddPersonForm, Persons, Notification } from './components/components'
 import personService from './services/personService'
 
 const App = () => {
@@ -38,21 +38,21 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    if(persons.map(person=>person.name).includes(newName)) {
+    if(persons.map(person => person.name).includes(newName)) {
       const updateConfirmation = window.confirm(`${newName} is already in the phonebook, replace the old number with a new one?`)
       if (updateConfirmation) {
-        personObj.id = persons.find(person=>person.name===newName).id
+        personObj.id = persons.find(person => person.name===newName).id
         personService.updatePerson(personObj).then(() => {
-          setPersons(persons.filter(person=>person.id!==personObj.id).concat(personObj))
+          setPersons(persons.filter(person => person.id!==personObj.id).concat(personObj))
           notify(`Number of ${personObj.name} has been updated.`)
         })
-        .catch(error => {
-          notify(`Person ${personObj.name} is already removed from server.`, 'error')
-          setTimeout(() => {
-            personService.getAll()
-              .then(data => setPersons(data))
-          }, 2000)
-        })
+          .catch(() => {
+            notify(`Person ${personObj.name} is already removed from server.`, 'error')
+            setTimeout(() => {
+              personService.getAll()
+                .then(data => setPersons(data))
+            }, 2000)
+          })
       }
       return
     }
@@ -62,14 +62,14 @@ const App = () => {
       setNewNumber('')
       notify(`Added person ${personObj.name}.`)
     })
-    .catch(error => {
-      notify(error.response.data.error, 'error')
-    })
+      .catch(error => {
+        notify(error.response.data.error, 'error')
+      })
   }
 
-  const deletePerson = (name, number) => {
+  const deletePerson = (name) => {
     const deleteConfirmation = window.confirm(`Delete ${name} from database?`)
-    const personId = persons.find(person=>person.name===name).id
+    const personId = persons.find(person => person.name===name).id
     if(deleteConfirmation) {
       personService.deletePerson(personId).then(() => {
         setPersons(persons.filter(person => person.id!==personId))

@@ -1,15 +1,15 @@
-const Person = ({person, onClick}) => {
-    return (
+const Person = ({ person, onClick }) => {
+  return (
     <div>
-        <span>{person.name} {person.number}</span>
-        <button onClick={()=>onClick(person.name, person.number)}>delete</button>
+      <span>{person.name} {person.number}</span>
+      <button onClick={() => onClick(person.name, person.number)}>delete</button>
     </div>
-    )
+  )
 }
 
-const Persons = ({shownNames, onClick}) => shownNames.map(person => <Person key={person.name} person={person} onClick={onClick}/>)
+const Persons = ({ shownNames, onClick }) => shownNames.map(person => <Person key={person.name} person={person} onClick={onClick}/>)
 
-const AddPersonForm = ({newName,handleNameInputChange, newNumber, handleNumberInputChange, addPerson}) => {
+const AddPersonForm = ({ newName,handleNameInputChange, newNumber, handleNumberInputChange, addPerson }) => {
   return (
     <form onSubmit={addPerson}>
       <div>
@@ -25,11 +25,11 @@ const AddPersonForm = ({newName,handleNameInputChange, newNumber, handleNumberIn
   )
 }
 
-const HeaderText = ({text}) => <h2>{text}</h2>
+const HeaderText = ({ text }) => <h2>{text}</h2>
 
-const PersonFilter = ({filter,changeFunc}) =>  <div>filter shown with: <input value={filter} onChange={changeFunc} /></div>
+const PersonFilter = ({ filter,changeFunc }) =>  <div>filter shown with: <input value={filter} onChange={changeFunc} /></div>
 
-const Notification = ({message, type}) => {
+const Notification = ({ message, type }) => {
   if(message===null) {
     return null
   }
@@ -50,4 +50,4 @@ const Notification = ({message, type}) => {
   )
 }
 
-export {Person, Persons, AddPersonForm, HeaderText, PersonFilter, Notification}
+export { Person, Persons, AddPersonForm, HeaderText, PersonFilter, Notification }
